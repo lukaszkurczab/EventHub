@@ -1,0 +1,15 @@
+substitutions:
+  _REGION: europe-west1
+  _REPOSITORY: eventhub
+  _TAG: $SHORT_SHA
+steps:
+  - name: gcr.io/cloud-builders/docker
+    args: [build, -t, '${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/shell:${_TAG}', -f, apps/shell/Dockerfile, .]
+  - name: gcr.io/cloud-builders/docker
+    args: [build, -t, '${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/events:${_TAG}', -f, apps/events/Dockerfile, .]
+  - name: gcr.io/cloud-builders/docker
+    args: [build, -t, '${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/host-dashboard:${_TAG}', -f, apps/host-dashboard/Dockerfile, .]
+images:
+  - '${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/shell:${_TAG}'
+  - '${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/events:${_TAG}'
+  - '${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/host-dashboard:${_TAG}'

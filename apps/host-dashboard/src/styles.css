@@ -1,0 +1,60 @@
+.eyebrow {
+  color: #673de6;
+  font-size: 0.8rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  margin: 0;
+  text-transform: uppercase;
+}
+h1 {
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  margin: 0.35rem 0 2rem;
+}
+section {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(3, 1fr);
+}
+article,
+.next {
+  background: white;
+  border: 1px solid #e7e8ef;
+  border-radius: 1rem;
+  padding: 1.4rem;
+}
+article strong {
+  display: block;
+  font-size: 2rem;
+}
+article span,
+.next p {
+  color: #64748b;
+}
+.next {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  margin-top: 2rem;
+}
+h2 {
+  margin: 0.35rem 0;
+}
+button {
+  background: #673de6;
+  border: 0;
+  border-radius: 0.5rem;
+  color: white;
+  cursor: pointer;
+  font: inherit;
+  padding: 0.7rem 1rem;
+}
+@media (max-width: 600px) {
+  section {
+    grid-template-columns: 1fr;
+  }
+  .next {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 1rem;
+  }
+}
