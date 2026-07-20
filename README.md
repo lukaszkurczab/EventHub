@@ -36,3 +36,5 @@ terraform apply \
 ```
 
 Cloud Build builds and pushes each application independently. Terraform manages the Cloud Run services and injects the remote URLs into the shell at runtime.
+
+url: https://eventhub-shell-3hsa4plphq-ew.a.run.app
