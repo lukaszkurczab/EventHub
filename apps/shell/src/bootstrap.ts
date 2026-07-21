@@ -1,7 +1,14 @@
-import { getRemotes, loadRemoteElement, type RemoteDefinition } from "./remote-loader";
+import {
+  getRemotes,
+  loadRemoteElement,
+  type RemoteDefinition,
+} from "./remote-loader";
 import "./styles.css";
 
-function element<K extends keyof HTMLElementTagNameMap>(tagName: K, className?: string) {
+function element<K extends keyof HTMLElementTagNameMap>(
+  tagName: K,
+  className?: string,
+) {
   const node = document.createElement(tagName);
   if (className) {
     node.className = className;
@@ -56,6 +63,7 @@ function renderShell(remotes: RemoteDefinition[]) {
       }
 
       content.replaceChildren(document.createElement(remote.elementName));
+      content.appendChild(document.createElement(remote.elementName));
     } catch (error) {
       if (currentRequest !== requestId) {
         return;
@@ -64,7 +72,9 @@ function renderShell(remotes: RemoteDefinition[]) {
       content.replaceChildren(
         unavailable(
           remote.navigationLabel,
-          error instanceof Error ? error.message : "Please try again in a moment.",
+          error instanceof Error
+            ? error.message
+            : "Please try again in a moment.",
         ),
       );
     }
@@ -90,7 +100,9 @@ try {
     root.replaceChildren(
       unavailable(
         "Application configuration",
-        error instanceof Error ? error.message : "The shell cannot load its remotes.",
+        error instanceof Error
+          ? error.message
+          : "The shell cannot load its remotes.",
       ),
     );
   }
