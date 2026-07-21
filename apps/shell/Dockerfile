@@ -2,9 +2,7 @@ FROM node:20-alpine AS build
 WORKDIR /app
 COPY package*.json ./
 COPY apps/shell/package.json apps/shell/package.json
-COPY apps/events/package.json apps/events/package.json
-COPY apps/host-dashboard/package.json apps/host-dashboard/package.json
-RUN npm ci
+RUN npm ci --workspace=@eventhub/shell
 COPY apps/shell apps/shell
 RUN npm run build --workspace=@eventhub/shell
 

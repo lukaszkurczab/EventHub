@@ -21,8 +21,8 @@ module.exports = {
       filename: "remoteEntry.js",
       exposes: { "./App": "./src/app.tsx" },
       shared: {
-        react: { singleton: true, requiredVersion: false },
-        "react-dom": { singleton: true, requiredVersion: false },
+        react: { singleton: true, requiredVersion: "^18.3.1", strictVersion: true },
+        "react-dom": { singleton: true, requiredVersion: "^18.3.1", strictVersion: true },
       },
     }),
     new HtmlWebpackPlugin({ template: "./src/index.html" }),

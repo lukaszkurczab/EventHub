@@ -9,24 +9,13 @@
   "scripts": {
     "dev": "concurrently \"npm run dev --workspace=@eventhub/shell\" \"npm run dev --workspace=@eventhub/events\" \"npm run dev --workspace=@eventhub/host-dashboard\"",
     "build": "npm run build --workspaces --if-present",
-    "typecheck": "tsc --noEmit -p apps/shell/tsconfig.json && tsc --noEmit -p apps/events/tsconfig.json && tsc --noEmit -p apps/host-dashboard/tsconfig.json"
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "verify:shell": "npm run verify --workspace=@eventhub/shell",
+    "verify:events": "npm run verify --workspace=@eventhub/events",
+    "verify:host-dashboard": "npm run verify --workspace=@eventhub/host-dashboard",
+    "verify:independence": "npm run verify:events && npm run verify:host-dashboard && node scripts/verify-independent-remotes.mjs"
   },
   "devDependencies": {
-    "@types/react": "^18.3.12",
-    "@types/react-dom": "^18.3.1",
-    "concurrently": "^9.1.0",
-    "copy-webpack-plugin": "^12.0.2",
-    "css-loader": "^7.1.2",
-    "html-webpack-plugin": "^5.6.0",
-    "style-loader": "^4.0.0",
-    "ts-loader": "^9.5.1",
-    "typescript": "^5.6.3",
-    "webpack": "^5.96.1",
-    "webpack-cli": "^5.1.4",
-    "webpack-dev-server": "^5.1.0"
-  },
-  "dependencies": {
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1"
+    "concurrently": "^9.1.0"
   }
 }

@@ -1,6 +1,6 @@
 import React, { Suspense, useMemo, useState } from "react";
 import { createRoot } from "react-dom/client";
-import { loadRemote } from "./remote-loader";
+import { getRemotes, loadRemote, type RemoteDefinition } from "./remote-loader";
 import "./styles.css";
 
 class RemoteErrorBoundary extends React.Component<
@@ -23,20 +23,18 @@ class RemoteErrorBoundary extends React.Component<
   }
 }
 
-const RemoteView = ({ scope, url }: { scope: string; url: string }) => {
+const RemoteView = ({ remote }: { remote: RemoteDefinition }) => {
   const App = useMemo(
     () =>
       React.lazy(() =>
-        loadRemote(scope, url).then((defaultExport) => ({
+        loadRemote(remote).then((defaultExport) => ({
           default: defaultExport,
         })),
       ),
-    [scope, url],
+    [remote],
   );
   return (
-    <RemoteErrorBoundary
-      feature={scope === "eventCatalog" ? "Event catalog" : "Host dashboard"}
-    >
+    <RemoteErrorBoundary feature={remote.navigationLabel}>
       <Suspense fallback={<p className="status">Loading feature…</p>}>
         <App />
       </Suspense>
@@ -44,23 +42,10 @@ const RemoteView = ({ scope, url }: { scope: string; url: string }) => {
   );
 };
 
-function App() {
-  const [page, setPage] = useState<"events" | "dashboard">("events");
-  const config = window.__EVENTHUB_CONFIG__;
-  const remote =
-    page === "events"
-      ? {
-          scope: "eventCatalog",
-          url: config.eventsRemoteUrl.startsWith("$")
-            ? "http://localhost:3001/remoteEntry.js"
-            : config.eventsRemoteUrl,
-        }
-      : {
-          scope: "hostDashboard",
-          url: config.dashboardRemoteUrl.startsWith("$")
-            ? "http://localhost:3002/remoteEntry.js"
-            : config.dashboardRemoteUrl,
-        };
+function App({ remotes }: { remotes: RemoteDefinition[] }) {
+  const [activeRemoteId, setActiveRemoteId] = useState(remotes[0].id);
+  const activeRemote = remotes.find((remote) => remote.id === activeRemoteId) ?? remotes[0];
+
   return (
     <main>
       <header>
@@ -68,25 +53,33 @@ function App() {
           EventHub
         </a>
         <nav>
-          <button
-            className={page === "events" ? "active" : ""}
-            onClick={() => setPage("events")}
-          >
-            Explore events
-          </button>
-          <button
-            className={page === "dashboard" ? "active" : ""}
-            onClick={() => setPage("dashboard")}
-          >
-            Host dashboard
-          </button>
+          {remotes.map((remote) => (
+            <button
+              key={remote.id}
+              className={activeRemote.id === remote.id ? "active" : ""}
+              onClick={() => setActiveRemoteId(remote.id)}
+            >
+              {remote.navigationLabel}
+            </button>
+          ))}
         </nav>
       </header>
       <section className="content">
-        <RemoteView key={page} {...remote} />
+        <RemoteView key={activeRemote.id} remote={activeRemote} />
       </section>
     </main>
   );
 }
 
-createRoot(document.getElementById("root")!).render(<App />);
+const root = createRoot(document.getElementById("root")!);
+
+try {
+  root.render(<App remotes={getRemotes()} />);
+} catch (error) {
+  root.render(
+    <section className="remote-error">
+      <h2>Application configuration is unavailable.</h2>
+      <p>{error instanceof Error ? error.message : "The shell cannot load its remotes."}</p>
+    </section>,
+  );
+}
