@@ -4,14 +4,16 @@ window.__EVENTHUB_CONFIG__ = {
       id: "events",
       navigationLabel: "Explore events",
       scope: "eventCatalog",
-      module: "./App",
+      module: "./element",
+      elementName: "eventhub-events",
       url: "$EVENTS_REMOTE_URL"
     },
     {
       id: "host-dashboard",
       navigationLabel: "Host dashboard",
       scope: "hostDashboard",
-      module: "./App",
+      module: "./element",
+      elementName: "eventhub-host-dashboard",
       url: "$DASHBOARD_REMOTE_URL"
     }
   ]

@@ -1,5 +1,4 @@
-import React from "react";
-import "./styles.css";
+import styles from "./styles.css";
 
 const events = [
   { date: "18 Jul", title: "Design Systems Meetup", place: "Warsaw" },
@@ -9,6 +8,7 @@ const events = [
 export default function EventCatalog() {
   return (
     <>
+      <style>{styles}</style>
       <p className="eyebrow">This weekend and beyond</p>
       <h1>Find your next great gathering.</h1>
       <div className="grid">

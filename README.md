@@ -5,7 +5,7 @@ EventHub is a proof of concept for an event-discovery platform. The user-facing 
 - **Event catalog** — browse upcoming events.
 - **Host dashboard** — manage a host's event portfolio.
 
-The project uses React, TypeScript, Webpack 5 Module Federation, Cloud Run, Cloud Build, Artifact Registry, and Terraform.
+The shell uses TypeScript and browser DOM APIs. The remotes use React internally and are delivered through Webpack 5 Module Federation, with Cloud Run, Cloud Build, Artifact Registry, and Terraform for deployment.
 
 ## Local development
 
@@ -22,7 +22,7 @@ npm run build
 npm run verify:independence
 ```
 
-`verify:independence` builds and checks `events` and `host-dashboard` separately. Both applications have their own versioned workspace package, dependency declaration, Module Federation artifact, Dockerfile, and Cloud Build definition. The shell does not import either package.
+`verify:independence` builds and checks `events` and `host-dashboard` separately. Both applications have their own versioned workspace package, dependency declaration, Module Federation artifact, Dockerfile, and Cloud Build definition. Each remote exposes and registers a Custom Element; the shell does not import either package or share its framework runtime.
 
 To build one remote only:
 

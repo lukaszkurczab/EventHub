@@ -1,5 +1,10 @@
-import React from 'react';
-import { createRoot } from 'react-dom/client';
-import App from './app';
+import { register, elementName } from "./element";
 
-createRoot(document.getElementById('root')!).render(<App />);
+register();
+
+const root = document.getElementById("root");
+if (!root) {
+  throw new Error("Event catalog root element is missing.");
+}
+
+root.replaceChildren(document.createElement(elementName));

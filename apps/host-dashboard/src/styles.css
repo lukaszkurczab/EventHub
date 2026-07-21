@@ -58,3 +58,8 @@ button {
     gap: 1rem;
   }
 }
+:host {
+  color: #172033;
+  display: block;
+  font-family: Inter, system-ui, sans-serif;
+}

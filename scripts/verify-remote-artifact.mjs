@@ -23,8 +23,8 @@ await access(artifact);
 
 const source = await readFile(artifact, "utf8");
 
-if (!source.includes(scope) || !source.includes("./App")) {
-  throw new Error(`${artifact} does not expose the required ${scope}/./App contract.`);
+if (!source.includes(scope) || !source.includes("./element")) {
+  throw new Error(`${artifact} does not expose the required ${scope}/./element contract.`);
 }
 
-console.log(`${scope}: remoteEntry.js exposes ./App`);
+console.log(`${scope}: remoteEntry.js exposes ./element`);

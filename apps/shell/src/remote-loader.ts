@@ -1,8 +1,3 @@
-import type { ComponentType } from "react";
-
-declare const __webpack_init_sharing__: (scope: string) => Promise<void>;
-declare const __webpack_share_scopes__: { default: unknown };
-
 declare global {
   interface Window {
     __EVENTHUB_CONFIG__?: { remotes?: unknown };
@@ -15,12 +10,17 @@ export type RemoteDefinition = {
   navigationLabel: string;
   scope: string;
   module: string;
+  elementName: string;
   url: string;
 };
 
 type RemoteContainer = {
-  init(shareScope: unknown): Promise<void>;
-  get(module: string): Promise<() => { default: ComponentType }>;
+  get(module: string): Promise<() => unknown>;
+};
+
+type RemoteElementModule = {
+  elementName: string;
+  register: () => void;
 };
 
 const containers = new Map<string, Promise<RemoteContainer>>();
@@ -31,9 +31,18 @@ function isRemoteDefinition(value: unknown): value is RemoteDefinition {
   }
 
   const remote = value as Record<string, unknown>;
-  return ["id", "navigationLabel", "scope", "module", "url"].every(
+  return ["id", "navigationLabel", "scope", "module", "elementName", "url"].every(
     (field) => typeof remote[field] === "string" && remote[field].length > 0,
   );
+}
+
+function isRemoteElementModule(value: unknown): value is RemoteElementModule {
+  if (!value || typeof value !== "object") {
+    return false;
+  }
+
+  const remote = value as Record<string, unknown>;
+  return typeof remote.elementName === "string" && typeof remote.register === "function";
 }
 
 export function getRemotes(): RemoteDefinition[] {
@@ -44,11 +53,19 @@ export function getRemotes(): RemoteDefinition[] {
   }
 
   const ids = new Set<string>();
+  const elementNames = new Set<string>();
   for (const remote of remotes) {
     if (ids.has(remote.id)) {
       throw new Error(`Shell runtime configuration contains the duplicate remote id: ${remote.id}.`);
     }
+    if (elementNames.has(remote.elementName)) {
+      throw new Error(`Shell runtime configuration contains the duplicate element name: ${remote.elementName}.`);
+    }
+    if (!remote.elementName.includes("-")) {
+      throw new Error(`Remote ${remote.id} must use a hyphenated custom-element name.`);
+    }
     ids.add(remote.id);
+    elementNames.add(remote.elementName);
 
     if (remote.url.startsWith("$")) {
       throw new Error(`Shell runtime configuration is missing the URL for ${remote.id}.`);
@@ -64,7 +81,7 @@ async function loadContainer(remote: RemoteDefinition): Promise<RemoteContainer>
 
   if (!container) {
     container = new Promise<RemoteContainer>((resolve, reject) => {
-      const script = document.createElement('script');
+      const script = document.createElement("script");
       script.src = remote.url;
       script.async = true;
       script.onload = () => {
@@ -85,9 +102,17 @@ async function loadContainer(remote: RemoteDefinition): Promise<RemoteContainer>
   return container;
 }
 
-export async function loadRemote(remote: RemoteDefinition): Promise<ComponentType> {
+export async function loadRemoteElement(remote: RemoteDefinition): Promise<void> {
   const container = await loadContainer(remote);
-  await __webpack_init_sharing__('default');
-  await container.init(__webpack_share_scopes__.default);
-  return (await container.get(remote.module))().default;
+  const exposedModule = (await container.get(remote.module))();
+
+  if (!isRemoteElementModule(exposedModule)) {
+    throw new Error(`Remote ${remote.id} does not expose a custom-element registration module.`);
+  }
+  if (exposedModule.elementName !== remote.elementName) {
+    throw new Error(`Remote ${remote.id} registered ${exposedModule.elementName}, not ${remote.elementName}.`);
+  }
+
+  exposedModule.register();
+  await customElements.whenDefined(remote.elementName);
 }

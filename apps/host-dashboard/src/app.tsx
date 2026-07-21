@@ -1,5 +1,4 @@
-import React from "react";
-import "./styles.css";
+import styles from "./styles.css";
 const metrics = [
   { label: "Upcoming events", value: "4" },
   { label: "Reservations", value: "286" },
@@ -8,6 +7,7 @@ const metrics = [
 export default function HostDashboard() {
   return (
     <>
+      <style>{styles}</style>
       <p className="eyebrow">Host workspace</p>
       <h1>Good afternoon, Alex.</h1>
       <section>

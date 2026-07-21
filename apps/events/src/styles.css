@@ -34,3 +34,8 @@ article button {
   color: white;
   margin-top: 0.5rem;
 }
+:host {
+  color: #172033;
+  display: block;
+  font-family: Inter, system-ui, sans-serif;
+}

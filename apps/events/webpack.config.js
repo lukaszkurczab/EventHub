@@ -12,18 +12,14 @@ module.exports = {
   module: {
     rules: [
       { test: /\.tsx?$/, loader: "ts-loader", exclude: /node_modules/ },
-      { test: /\.css$/, use: ["style-loader", "css-loader"] },
+      { test: /\.css$/, loader: "css-loader", options: { exportType: "string" } },
     ],
   },
   plugins: [
     new container.ModuleFederationPlugin({
       name: "eventCatalog",
       filename: "remoteEntry.js",
-      exposes: { "./App": "./src/app.tsx" },
-      shared: {
-        react: { singleton: true, requiredVersion: "^18.3.1", strictVersion: true },
-        "react-dom": { singleton: true, requiredVersion: "^18.3.1", strictVersion: true },
-      },
+      exposes: { "./element": "./src/element.tsx" },
     }),
     new HtmlWebpackPlugin({ template: "./src/index.html" }),
   ],

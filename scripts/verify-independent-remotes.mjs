@@ -49,7 +49,8 @@ for (const remote of remotes) {
 
   if (
     !webpackConfig.includes(`name: "${remote.scope}"`) ||
-    !webpackConfig.includes('"./App"') ||
+    !webpackConfig.includes('"./element"') ||
+    webpackConfig.includes("shared:") ||
     !dockerfile.includes(`--workspace=${remote.packageName}`) ||
     !buildConfig.includes(`/${remote.imageName}:`)
   ) {
@@ -57,4 +58,17 @@ for (const remote of remotes) {
   }
 }
 
-console.log("events and host-dashboard have separate package, artifact, and build contracts");
+const shellPackage = JSON.parse(await readFile("apps/shell/package.json", "utf8"));
+const shellWebpackConfig = await readFile("apps/shell/webpack.config.js", "utf8");
+
+if (
+  shellPackage.dependencies?.react ||
+  shellPackage.dependencies?.["react-dom"] ||
+  shellPackage.devDependencies?.["@types/react"] ||
+  shellPackage.devDependencies?.["@types/react-dom"] ||
+  shellWebpackConfig.includes("ModuleFederationPlugin")
+) {
+  throw new Error("@eventhub/shell must remain a framework-neutral DOM host.");
+}
+
+console.log("shell is a framework-neutral DOM host; remotes have separate element, package, and build contracts");
