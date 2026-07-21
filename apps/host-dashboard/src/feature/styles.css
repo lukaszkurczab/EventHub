@@ -1,3 +1,9 @@
+:host {
+  color: #172033;
+  display: block;
+  font-family: Inter, system-ui, sans-serif;
+}
+
 .eyebrow {
   color: #673de6;
   font-size: 0.8rem;
@@ -57,9 +63,4 @@ button {
     flex-direction: column;
     gap: 1rem;
   }
-}
-:host {
-  color: #172033;
-  display: block;
-  font-family: Inter, system-ui, sans-serif;
 }

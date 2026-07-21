@@ -1,1 +1,1 @@
-import('./bootstrap');
+import("./platform/standalone");

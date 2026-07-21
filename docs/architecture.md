@@ -30,6 +30,19 @@ The shell resolves a generic `remotes` manifest from `window.__EVENTHUB_CONFIG__
 
 `events` and `host-dashboard` are versioned npm workspace packages with their own dependency declarations, typecheck/build/verification commands, Dockerfiles, Module Federation containers, and Cloud Build definitions. They do not declare dependencies on one another or on the shell. The root workspace coordinates local development only; it is not an import boundary between applications.
 
+## Remote source layout
+
+Each React remote uses the same source boundary:
+
+| Path | Responsibility | Normal editing target |
+| --- | --- | --- |
+| `src/feature/` | Domain components, local data, and Shadow DOM styles | Yes |
+| `src/platform/custom-element.tsx` | Stable Custom Element registration and React-root lifecycle | No, unless the host contract changes |
+| `src/platform/standalone.ts` | Mounting the same element for the remote's standalone page | No |
+| `src/index.tsx` | Application entry point | No |
+
+Feature code is imported through `src/feature/index.tsx`; this keeps the platform boundary stable while the UI can be split into further components without changing the host contract.
+
 ## GCP model
 
 Each frontend is an independently versioned static bundle served by its own Cloud Run service. The three Cloud Build definitions each produce one immutable Artifact Registry image, allowing a remote image to be built and released without rebuilding either other application. Terraform declares the services and wires the shell's `EVENTS_REMOTE_URL` and `DASHBOARD_REMOTE_URL` environment variables to the deployed remote services. For production, place the services behind a global HTTPS load balancer and Cloud CDN, restrict Cloud Run ingress to the load balancer, and replace public invoker access with IAP or an identity-aware gateway.

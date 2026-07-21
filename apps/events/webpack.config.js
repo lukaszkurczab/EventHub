@@ -19,7 +19,7 @@ module.exports = {
     new container.ModuleFederationPlugin({
       name: "eventCatalog",
       filename: "remoteEntry.js",
-      exposes: { "./element": "./src/element.tsx" },
+      exposes: { "./element": "./src/platform/custom-element.tsx" },
     }),
     new HtmlWebpackPlugin({ template: "./src/index.html" }),
   ],

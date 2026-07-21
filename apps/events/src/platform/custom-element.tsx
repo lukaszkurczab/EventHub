@@ -1,9 +1,9 @@
 import { createRoot, type Root } from "react-dom/client";
-import HostDashboard from "./app";
+import EventCatalog from "../feature";
 
-export const elementName = "eventhub-host-dashboard";
+export const elementName = "eventhub-events";
 
-class HostDashboardElement extends HTMLElement {
+class EventCatalogElement extends HTMLElement {
   private root?: Root;
   private mountPoint?: HTMLDivElement;
 
@@ -19,7 +19,7 @@ class HostDashboardElement extends HTMLElement {
     }
 
     this.root = createRoot(this.mountPoint);
-    this.root.render(<HostDashboard />);
+    this.root.render(<EventCatalog />);
   }
 
   disconnectedCallback() {
@@ -30,6 +30,6 @@ class HostDashboardElement extends HTMLElement {
 
 export function register() {
   if (!customElements.get(elementName)) {
-    customElements.define(elementName, HostDashboardElement);
+    customElements.define(elementName, EventCatalogElement);
   }
 }

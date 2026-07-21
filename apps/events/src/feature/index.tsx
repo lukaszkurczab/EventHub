@@ -1,10 +1,6 @@
 import styles from "./styles.css";
+import { events } from "./events";
 
-const events = [
-  { date: "18 Jul", title: "Design Systems Meetup", place: "Warsaw" },
-  { date: "24 Jul", title: "Sustainable Cities Forum", place: "Kraków" },
-  { date: "02 Aug", title: "Indie Makers Night", place: "Gdańsk" },
-];
 export default function EventCatalog() {
   return (
     <>

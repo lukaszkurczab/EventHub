@@ -1,9 +1,6 @@
 import styles from "./styles.css";
-const metrics = [
-  { label: "Upcoming events", value: "4" },
-  { label: "Reservations", value: "286" },
-  { label: "Response rate", value: "94%" },
-];
+import { metrics } from "./metrics";
+
 export default function HostDashboard() {
   return (
     <>
